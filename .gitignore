@@ -1,0 +1,12 @@
+# Build artifacts
+bin/
+obj/
+
+# SQLite database
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+
+# IDE
+.vs/
+.idea/
