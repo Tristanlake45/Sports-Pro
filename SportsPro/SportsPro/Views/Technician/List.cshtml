@@ -1,27 +1,36 @@
 @model IEnumerable<SportsPro.Models.Technician>
 
 @{
-    ViewData["Title"] = "Technician Manager";
+    ViewData["Title"] = "Technicians";
 }
 
-<h2>Technician Manager</h2>
+<h1>Technicians</h1>
 
-<table class="table table-bordered">
+<p>
+    <a asp-action="AddEdit" class="btn btn-primary">Add Technician</a>
+</p>
+
+<table class="table table-striped">
     <thead>
         <tr>
             <th>Name</th>
             <th>Email</th>
             <th>Phone</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-    @foreach (var t in Model)
-    {
-        <tr>
-            <td>@t.Name</td>
-            <td>@t.Email</td>
-            <td>@t.Phone</td>
-        </tr>
-    }
+        @foreach (var tech in Model)
+        {
+            <tr>
+                <td>@tech.Name</td>
+                <td>@tech.Email</td>
+                <td>@tech.Phone</td>
+                <td>
+                    <a asp-action="AddEdit" asp-route-id="@tech.TechnicianID">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@tech.TechnicianID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
