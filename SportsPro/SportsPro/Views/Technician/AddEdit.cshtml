@@ -1,13 +1,13 @@
 @model SportsPro.Models.Technician
 
 @{
-    bool isEdit = Model?.TechnicianID > 0;
+    bool isEdit = Model.TechnicianID != 0;
     ViewData["Title"] = isEdit ? "Edit Technician" : "Add Technician";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<form asp-action="AddEdit" method="post">
+<form method="post">
 <input type="hidden" asp-for="TechnicianID" />
 
     <div asp-validation-summary="All" class="text-danger"></div>
@@ -17,7 +17,7 @@
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-
+    
     <div class="form-group">
         <label asp-for="Email"></label>
         <input asp-for="Email" class="form-control" />
