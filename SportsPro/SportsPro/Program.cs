@@ -12,7 +12,8 @@ builder.Services.AddRouting(options => {
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<SportsProContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SportsPro")));
+    options.UseSqlite(builder.Configuration.GetConnectionString("SportsProContext")));
+
 
 var app = builder.Build();
 
