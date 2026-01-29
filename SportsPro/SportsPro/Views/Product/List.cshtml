@@ -1,0 +1,38 @@
+@model IEnumerable<SportsPro.Models.Product>
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<h1>Products</h1>
+
+<p>
+    <a asp-action="Add" class="btn btn-primary">Add Product</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th class="text-end">Yearly Price</th>
+            <th>Release Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var product in Model)
+    {
+        <tr>
+            <td>@product.ProductCode</td>
+            <td>@product.Name</td>
+            <td class="text-end">@product.YearlyPrice.ToString("c")</td>
+            <td>@product.ReleaseDate.ToString("d")</td>
+            <td class="text-nowrap">
+                <a asp-action="Edit" asp-route-id="@product.ProductID">Edit</a> |
+                <a asp-action="Delete" asp-route-id="@product.ProductID">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
