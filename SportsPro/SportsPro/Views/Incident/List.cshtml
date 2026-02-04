@@ -1,0 +1,42 @@
+@model IEnumerable<SportsPro.Models.Incident>
+
+@{
+    ViewData["Title"] = "Incidents";
+}
+
+<h1>Incidents</h1>
+
+<p>
+    <a asp-action="Add" class="btn btn-primary">Add Incident</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Date Opened</th>
+            <th>Date Closed</th>
+            <th>Customer</th>
+            <th>Product</th>
+            <th>Technician</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var i in Model)
+    {
+        <tr>
+            <td>@i.Title</td>
+            <td>@i.DateOpened.ToString("d")</td>
+            <td>@(i.DateClosed.HasValue ? i.DateClosed.Value.ToString("d") : "")</td>
+            <td>@(i.Customer != null ? $"{i.Customer.FirstName} {i.Customer.LastName}" : i.CustomerID.ToString())</td>
+            <td>@(i.Product != null ? i.Product.Name : i.ProductID.ToString())</td>
+            <td>@(i.Technician != null ? i.Technician.Name : i.TechnicianID.ToString())</td>
+            <td class="text-nowrap">
+                <a asp-action="Edit" asp-route-id="@i.IncidentID">Edit</a> |
+                <a asp-action="Delete" asp-route-id="@i.IncidentID">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

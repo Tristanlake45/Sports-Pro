@@ -1,0 +1,71 @@
+@model SportsPro.Models.Incident
+
+@{
+    bool isEdit = Model?.IncidentID != 0;
+    ViewData["Title"] = isEdit ? "Edit Incident" : "Add Incident";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="@(isEdit ? "Edit" : "Add")"
+      asp-route-id="@(isEdit ? Model.IncidentID : null)"
+      method="post">
+    <input type="hidden" asp-for="IncidentID" />
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="CustomerID" class="form-label">Customer</label>
+            <select asp-for="CustomerID" asp-items="ViewBag.Customers" class="form-select">
+                <option value="">Select a customer...</option>
+            </select>
+            <span asp-validation-for="CustomerID" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label asp-for="ProductID" class="form-label">Product</label>
+            <select asp-for="ProductID" asp-items="ViewBag.Products" class="form-select">
+                <option value="">Select a product...</option>
+            </select>
+            <span asp-validation-for="ProductID" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label asp-for="TechnicianID" class="form-label">Technician</label>
+            <select asp-for="TechnicianID" asp-items="ViewBag.Technicians" class="form-select">
+                <option value="">Select a technician...</option>
+            </select>
+            <span asp-validation-for="TechnicianID" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="DateOpened" class="form-label"></label>
+            <input asp-for="DateOpened" type="date" class="form-control" />
+            <span asp-validation-for="DateOpened" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label asp-for="DateClosed" class="form-label"></label>
+            <input asp-for="DateClosed" type="date" class="form-control" />
+            <span asp-validation-for="DateClosed" class="text-danger"></span>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success mt-2">Save</button>
+    <a asp-action="List" class="btn btn-secondary mt-2">Cancel</a>
+</form>

@@ -1,21 +1,37 @@
-﻿namespace SportsPro.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SportsPro.Models
 {
     public class Customer
     {
-		public int CustomerID { get; set; }
+        public int CustomerID { get; set; }
 
-		public string FirstName { get; set; } = string.Empty;
-		public string LastName { get; set; } = string.Empty;
-		public string Address { get; set; } = string.Empty;
-		public string City { get; set; } = string.Empty;
-		public string State { get; set; } = string.Empty;
-		public string PostalCode { get; set; } = string.Empty;
-		public string? Phone { get; set; } 
-        public string? Email { get; set; } 
+        [Required]
+        public string FirstName { get; set; } = "";
 
-        public string CountryID { get; set; } = string.Empty;   // foreign key property
-        public Country Country { get; set; } = null!;           // navigation property
+        [Required]
+        public string LastName { get; set; } = "";
 
-        public string FullName => FirstName + " " + LastName;   // read-only property
-	}
+        [Required]
+        public string Address { get; set; } = "";
+
+        [Required]
+        public string City { get; set; } = "";
+
+        [Required]
+        public string State { get; set; } = "";
+
+        [Required]
+        public string PostalCode { get; set; } = "";
+
+        [Required(ErrorMessage = "Please select a country.")]
+        public string CountryID { get; set; } = "";
+
+        // optional per rubric
+        public string? Email { get; set; }
+        public string? Phone { get; set; }
+
+        // navigation is OK, just NOT [Required]
+        public Country? Country { get; set; }
+    }
 }
