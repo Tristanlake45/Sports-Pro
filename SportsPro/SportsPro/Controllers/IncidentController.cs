@@ -15,11 +15,11 @@ namespace SportsPro.Controllers
             _context = context;
         }
 
-        // GET: /incident/list/
+        // GET: /incidents
+        [HttpGet("/incidents")]
         [HttpGet("list/")]
         public IActionResult List()
         {
-            // Include related entities if list shows names instead of IDs
             var incidents = _context.Incidents
                 .Include(i => i.Customer)
                 .Include(i => i.Product)

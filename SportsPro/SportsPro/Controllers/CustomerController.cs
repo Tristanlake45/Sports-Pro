@@ -14,11 +14,11 @@ namespace SportsPro.Controllers
             _context = context;
         }
 
-        // GET: /customer/list/
+        // GET: /customers
+        [HttpGet("/customers")]
         [HttpGet("list/")]
         public IActionResult List()
         {
-            // You can include Country if your views display Country.Name
             var customers = _context.Customers
                 .OrderBy(c => c.LastName)
                 .ThenBy(c => c.FirstName)

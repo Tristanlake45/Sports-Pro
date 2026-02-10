@@ -2,17 +2,16 @@
 
 namespace SportsPro.Controllers
 {
+    [Route("home")]
     public class HomeController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+        [HttpGet("")]
+        [HttpGet("/")]
+        public IActionResult Index() => View();
 
-        public IActionResult About()
-        {
-            return View();
-        }
-
+        // supports: /about/  AND  /home/about/
+        [HttpGet("/about/")]
+        [HttpGet("about/")]
+        public IActionResult About() => View();
     }
 }

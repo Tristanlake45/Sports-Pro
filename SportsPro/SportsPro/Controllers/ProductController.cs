@@ -14,14 +14,12 @@ namespace SportsPro.Controllers
             _context = context;
         }
 
-        // GET: /product/list/
+        // GET: /products
+        [HttpGet("/products")]
         [HttpGet("list/")]
         public IActionResult List()
         {
-            var products = _context.Products
-                .OrderBy(p => p.ProductCode)
-                .ToList();
-
+            var products = _context.Products.OrderBy(p => p.ProductCode).ToList();
             return View(products);
         }
 

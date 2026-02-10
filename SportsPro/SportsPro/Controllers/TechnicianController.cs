@@ -12,8 +12,9 @@ namespace SportsPro.Controllers
         {
             _context = context;
         }
-
-        // GET: /technician/list/
+        
+        // GET: /technicians
+        [HttpGet("/technicians")]
         [HttpGet("list/")]
         public IActionResult List()
         {
