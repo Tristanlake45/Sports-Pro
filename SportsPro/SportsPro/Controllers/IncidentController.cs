@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SportsPro.Models;
+using SportsPro.ViewModels;
 
 namespace SportsPro.Controllers
 {
@@ -20,25 +20,26 @@ namespace SportsPro.Controllers
         [HttpGet("list/")]
         public IActionResult List()
         {
-            var incidents = _context.Incidents
-                .Include(i => i.Customer)
-                .Include(i => i.Product)
-                .Include(i => i.Technician)
-                .OrderByDescending(i => i.DateOpened)
-                .ToList();
+            var viewModel = new IncidentListViewModel
+            {
+                Incidents = _context.Incidents
+                    .Include(i => i.Customer)
+                    .Include(i => i.Product)
+                    .Include(i => i.Technician)
+                    .OrderByDescending(i => i.DateOpened)
+                    .ToList(),
+                Filter = "all"
+            };
 
-            return View(incidents);
+            return View(viewModel);
         }
 
         // GET: /incident/add/
         [HttpGet("add/")]
         public IActionResult Add()
         {
-            LoadIncidentDropdowns();
-            return View("AddEdit", new Incident
-            {
-                DateOpened = DateTime.Today
-            });
+            var viewModel = BuildAddEditViewModel(new Incident { DateOpened = DateTime.Today }, "Add");
+            return View("AddEdit", viewModel);
         }
 
         // POST: /incident/add/
@@ -48,8 +49,7 @@ namespace SportsPro.Controllers
         {
             if (!ModelState.IsValid)
             {
-                LoadIncidentDropdowns(incident.CustomerID, incident.ProductID, incident.TechnicianID);
-                return View("AddEdit", incident);
+                return View("AddEdit", BuildAddEditViewModel(incident, "Add"));
             }
 
             _context.Incidents.Add(incident);
@@ -65,8 +65,7 @@ namespace SportsPro.Controllers
             var incident = _context.Incidents.Find(id);
             if (incident == null) return NotFound();
 
-            LoadIncidentDropdowns(incident.CustomerID, incident.ProductID, incident.TechnicianID);
-            return View("AddEdit", incident);
+            return View("AddEdit", BuildAddEditViewModel(incident, "Edit"));
         }
 
         // POST: /incident/edit/4/
@@ -78,8 +77,7 @@ namespace SportsPro.Controllers
 
             if (!ModelState.IsValid)
             {
-                LoadIncidentDropdowns(incident.CustomerID, incident.ProductID, incident.TechnicianID);
-                return View("AddEdit", incident);
+                return View("AddEdit", BuildAddEditViewModel(incident, "Edit"));
             }
 
             _context.Incidents.Update(incident);
@@ -117,30 +115,24 @@ namespace SportsPro.Controllers
             return RedirectToAction(nameof(List));
         }
 
-        private void LoadIncidentDropdowns(int? selectedCustomerId = null, int? selectedProductId = null, int? selectedTechnicianId = null)
+        private IncidentAddEditViewModel BuildAddEditViewModel(Incident incident, string action)
         {
-            var customers = _context.Customers
-                .OrderBy(c => c.LastName)
-                .ThenBy(c => c.FirstName)
-                .Select(c => new
-                {
-                    c.CustomerID,
-                    FullName = c.FirstName + " " + c.LastName
-                })
-                .ToList();
-
-            var products = _context.Products
-                .OrderBy(p => p.ProductCode)
-                .ToList();
-
-            var technicians = _context.Technicians
-                .Where(t => t.TechnicianID != -1) // keep consistent with earlier assignments
-                .OrderBy(t => t.Name)
-                .ToList();
-
-            ViewBag.Customers = new SelectList(customers, "CustomerID", "FullName", selectedCustomerId);
-            ViewBag.Products = new SelectList(products, "ProductID", "Name", selectedProductId);
-            ViewBag.Technicians = new SelectList(technicians, "TechnicianID", "Name", selectedTechnicianId);
+            return new IncidentAddEditViewModel
+            {
+                Incident = incident,
+                Action = action,
+                Customers = _context.Customers
+                    .OrderBy(c => c.LastName)
+                    .ThenBy(c => c.FirstName)
+                    .ToList(),
+                Products = _context.Products
+                    .OrderBy(p => p.ProductCode)
+                    .ToList(),
+                Technicians = _context.Technicians
+                    .Where(t => t.TechnicianID != -1)
+                    .OrderBy(t => t.Name)
+                    .ToList()
+            };
         }
     }
 }

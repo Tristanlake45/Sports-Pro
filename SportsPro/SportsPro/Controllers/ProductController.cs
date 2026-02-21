@@ -17,7 +17,7 @@ namespace SportsPro.Controllers
         // GET: /products
         [HttpGet("/products")]
         [HttpGet("list/")]
-        public IActionResult List()
+        public ViewResult List()
         {
             var products = _context.Products.OrderBy(p => p.ProductCode).ToList();
             return View(products);
@@ -25,7 +25,7 @@ namespace SportsPro.Controllers
 
         // GET: /product/add/
         [HttpGet("add/")]
-        public IActionResult Add()
+        public ViewResult Add()
         {
             var product = new Product
             {
@@ -48,6 +48,7 @@ namespace SportsPro.Controllers
             _context.Products.Add(product);
             _context.SaveChanges();
 
+            TempData["Message"] = "Product was added successfully.";
             return RedirectToAction(nameof(List));
         }
 
@@ -82,6 +83,7 @@ namespace SportsPro.Controllers
             _context.Products.Update(product);
             _context.SaveChanges();
 
+            TempData["Message"] = "Product was updated successfully.";
             return RedirectToAction(nameof(List));
         }
 
@@ -101,23 +103,22 @@ namespace SportsPro.Controllers
         // POST: /product/delete/5/
         [HttpPost("delete/{id:int}/")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public RedirectToActionResult DeleteConfirmed(int id)
         {
             var product = _context.Products.Find(id);
-            if (product == null)
+            if (product != null)
             {
-                return RedirectToAction(nameof(List));
+                _context.Products.Remove(product);
+                _context.SaveChanges();
+                TempData["Message"] = "Product was deleted successfully.";
             }
-
-            _context.Products.Remove(product);
-            _context.SaveChanges();
 
             return RedirectToAction(nameof(List));
         }
 
         // GET: /product/cancel/
         [HttpGet("cancel/")]
-        public IActionResult Cancel()
+        public RedirectToActionResult Cancel()
         {
             return RedirectToAction(nameof(List));
         }
