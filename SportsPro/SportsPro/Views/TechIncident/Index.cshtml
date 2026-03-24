@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "Get Technician";
+}
+
+<h1>Technician</h1>
+
+<form asp-action="Index" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <select name="technicianId" asp-items="ViewBag.Technicians" class="form-select">
+            <option value="">Select a technician...</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Select</button>
+</form>

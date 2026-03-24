@@ -1,0 +1,50 @@
+@model IEnumerable<SportsPro.Models.Incident>
+
+@{
+    ViewData["Title"] = "List Incidents for Technician";
+    var technician = ViewBag.Technician as SportsPro.Models.Technician;
+}
+
+@if (technician != null)
+{
+    <h1>Technician: @technician.Name</h1>
+}
+
+<h1>Assigned/Open Incidents</h1>
+
+@if (!Model.Any())
+{
+    <p>There are no open incidents for this technician.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Customer</th>
+                <th>Product</th>
+                <th>Date Opened</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var incident in Model)
+        {
+            <tr>
+                <td>@incident.Title</td>
+                <td>@(incident.Customer != null ? $"{incident.Customer.FirstName} {incident.Customer.LastName}" : "")</td>
+                <td>@(incident.Product != null ? incident.Product.Name : "")</td>
+                <td>@incident.DateOpened.ToString("d")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@incident.IncidentID" class="btn btn-primary">Edit</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<p>
+    <a asp-action="Switch" class="btn btn-primary">Switch Technician</a>
+</p>

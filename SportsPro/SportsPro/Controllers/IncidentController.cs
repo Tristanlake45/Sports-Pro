@@ -16,19 +16,34 @@ namespace SportsPro.Controllers
         }
 
         // GET: /incidents
-        [HttpGet("/incidents")]
-        [HttpGet("list/")]
-        public IActionResult List()
+        // GET: /incidents/unassigned
+        // GET: /incidents/open
+        [HttpGet("/incidents/{filter?}")]
+        [HttpGet("list/{filter?}")]
+        public IActionResult List(string filter = "all")
         {
+            var query = _context.Incidents
+                .Include(i => i.Customer)
+                .Include(i => i.Product)
+                .Include(i => i.Technician)
+                .AsQueryable();
+
+            if (filter == "unassigned")
+            {
+                query = query.Where(i => i.TechnicianID == -1);
+            }
+            else if (filter == "open")
+            {
+                query = query.Where(i => i.DateClosed == null);
+            }
+            // "all" intentionally applies no filter
+
             var viewModel = new IncidentListViewModel
             {
-                Incidents = _context.Incidents
-                    .Include(i => i.Customer)
-                    .Include(i => i.Product)
-                    .Include(i => i.Technician)
+                Incidents = query
                     .OrderByDescending(i => i.DateOpened)
                     .ToList(),
-                Filter = "all"
+                Filter = filter
             };
 
             return View(viewModel);
@@ -38,7 +53,10 @@ namespace SportsPro.Controllers
         [HttpGet("add/")]
         public IActionResult Add()
         {
-            var viewModel = BuildAddEditViewModel(new Incident { DateOpened = DateTime.Today }, "Add");
+            var viewModel = BuildAddEditViewModel(
+                new Incident { DateOpened = DateTime.Today, TechnicianID = -1 },
+                "Add");
+
             return View("AddEdit", viewModel);
         }
 
@@ -125,12 +143,15 @@ namespace SportsPro.Controllers
                     .OrderBy(c => c.LastName)
                     .ThenBy(c => c.FirstName)
                     .ToList(),
+
                 Products = _context.Products
                     .OrderBy(p => p.ProductCode)
                     .ToList(),
+
+                // Include "Not assigned" so admin can create unassigned incidents
                 Technicians = _context.Technicians
-                    .Where(t => t.TechnicianID != -1)
-                    .OrderBy(t => t.Name)
+                    .OrderBy(t => t.TechnicianID == -1 ? 0 : 1)
+                    .ThenBy(t => t.Name)
                     .ToList()
             };
         }

@@ -4,39 +4,62 @@
     ViewData["Title"] = "Incidents";
 }
 
-<h1>Incidents</h1>
+<h1>Incident Manager</h1>
+
+<ul class="nav nav-pills mb-3">
+    <li class="nav-item">
+        <a class="nav-link @(Model.Filter == "all" ? "active" : "")"
+           href="/incidents">All incidents</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(Model.Filter == "unassigned" ? "active" : "")"
+           href="/incidents/unassigned">Unassigned incidents</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(Model.Filter == "open" ? "active" : "")"
+           href="/incidents/open">Open incidents</a>
+    </li>
+</ul>
+
+@if (!Model.Incidents.Any())
+{
+    <p>No incidents found for this filter.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Customer</th>
+                <th>Product</th>
+                <th>Date Opened</th>
+                <th>Date Closed</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var i in Model.Incidents)
+        {
+            <tr>
+                <td>@i.Title</td>
+                <td>@(i.Customer != null ? $"{i.Customer.FirstName} {i.Customer.LastName}" : i.CustomerID.ToString())</td>
+                <td>@(i.Product != null ? i.Product.Name : i.ProductID.ToString())</td>
+                <td>@i.DateOpened.ToString("d")</td>
+                <td>@(i.DateClosed.HasValue ? i.DateClosed.Value.ToString("d") : "")</td>
+                <td class="text-nowrap">
+                    <a asp-action="Edit" asp-route-id="@i.IncidentID" class="btn btn-primary">Edit</a>
+                </td>
+                <td class="text-nowrap">
+                    <a asp-action="Delete" asp-route-id="@i.IncidentID" class="btn btn-primary">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
 
 <p>
     <a asp-action="Add" class="btn btn-primary">Add Incident</a>
 </p>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Date Opened</th>
-            <th>Date Closed</th>
-            <th>Customer</th>
-            <th>Product</th>
-            <th>Technician</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var i in Model.Incidents)
-    {
-        <tr>
-            <td>@i.Title</td>
-            <td>@i.DateOpened.ToString("d")</td>
-            <td>@(i.DateClosed.HasValue ? i.DateClosed.Value.ToString("d") : "")</td>
-            <td>@(i.Customer != null ? $"{i.Customer.FirstName} {i.Customer.LastName}" : i.CustomerID.ToString())</td>
-            <td>@(i.Product != null ? i.Product.Name : i.ProductID.ToString())</td>
-            <td>@(i.Technician != null ? i.Technician.Name : i.TechnicianID.ToString())</td>
-            <td class="text-nowrap">
-                <a asp-action="Edit" asp-route-id="@i.IncidentID">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@i.IncidentID">Delete</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
