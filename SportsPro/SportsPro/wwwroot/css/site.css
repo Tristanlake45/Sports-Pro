@@ -1,0 +1,11 @@
+.input-validation-error,
+select.input-validation-error,
+textarea.input-validation-error {
+    border: 2px solid #dc3545;
+    background-color: #fff3cd;
+}
+
+.field-validation-error,
+.validation-summary-errors {
+    color: #dc3545;
+}

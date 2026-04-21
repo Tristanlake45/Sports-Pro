@@ -1,0 +1,52 @@
+@model SportsPro.ViewModels.RegistrationListViewModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Registrations";
+    var productItems = new SelectList(Model.AvailableProducts, "ProductID", "Name");
+}
+
+<h1>Customer: @Model.CurrentCustomer.FirstName @Model.CurrentCustomer.LastName</h1>
+
+<h1>Registrations</h1>
+
+@if (!Model.Registrations.Any())
+{
+    <p>There are no products registered for this customer.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var reg in Model.Registrations)
+        {
+            <tr>
+                <td>@reg.Product?.Name</td>
+                <td>
+                    <form asp-action="Delete" asp-route-productId="@reg.ProductID" method="post">
+                        <button type="submit" class="btn btn-primary">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<h2>Product</h2>
+
+<form asp-action="Register" method="post">
+    <div class="mb-3">
+        <select name="productId" asp-items="productItems" class="form-select">
+            <option value="">Select a product...</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>

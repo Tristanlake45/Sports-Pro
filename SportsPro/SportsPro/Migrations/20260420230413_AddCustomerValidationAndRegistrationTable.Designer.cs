@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SportsPro.Models;
 
@@ -10,9 +11,10 @@ using SportsPro.Models;
 namespace SportsPro.Migrations
 {
     [DbContext(typeof(SportsProContext))]
-    partial class SportsProContextModelSnapshot : ModelSnapshot
+    [Migration("20260420230413_AddCustomerValidationAndRegistrationTable")]
+    partial class AddCustomerValidationAndRegistrationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.10");
@@ -561,18 +563,6 @@ namespace SportsPro.Migrations
                     b.HasIndex("ProductID");
 
                     b.ToTable("Registrations");
-
-                    b.HasData(
-                        new
-                        {
-                            CustomerID = 1002,
-                            ProductID = 1
-                        },
-                        new
-                        {
-                            CustomerID = 1002,
-                            ProductID = 3
-                        });
                 });
 
             modelBuilder.Entity("SportsPro.Models.Technician", b =>

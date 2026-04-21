@@ -1,5 +1,4 @@
-﻿@* Views/Home/Index.cshtml *@
-@{
+﻿@{
     ViewData["Title"] = "Home";
 }
 
@@ -9,16 +8,11 @@
 <h1>Admin</h1>
 <div class="list-group">
     <a href="/products" class="list-group-item">Manage Products</a>
-
     <a href="/technicians" class="list-group-item">Manage Technicians</a>
-
     <a href="/customers" class="list-group-item">Manage Customers</a>
-
     <a href="/incidents" class="list-group-item">Manage Incidents</a>
-
-    <a asp-controller="Registration" asp-action="List"
+    <a asp-controller="Registration" asp-action="GetCustomer"
        class="list-group-item">Manage Registrations</a>
-
     <a href="/about" class="list-group-item">About</a>
 </div>
 

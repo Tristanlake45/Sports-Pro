@@ -13,9 +13,23 @@ namespace SportsPro.Models
         public DbSet<Country> Countries { get; set; } = null!;
         public DbSet<Customer> Customers { get; set; } = null!;
         public DbSet<Incident> Incidents { get; set; } = null!;
+        public DbSet<Registration> Registrations { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Registration>()
+                .HasKey(r => new { r.CustomerID, r.ProductID });
+
+            modelBuilder.Entity<Registration>()
+                .HasOne(r => r.Customer)
+                .WithMany(c => c.Registrations)
+                .HasForeignKey(r => r.CustomerID);
+
+            modelBuilder.Entity<Registration>()
+                .HasOne(r => r.Product)
+                .WithMany(p => p.Registrations)
+                .HasForeignKey(r => r.ProductID);
+
             modelBuilder.Entity<Product>().HasData(
                 new Product
                 {
@@ -253,10 +267,9 @@ namespace SportsPro.Models
                     PostalCode = "92691",
                     CountryID = "US",
                     Phone = "(214) 555-3647",
-                    Email = ""
+                    Email = "gonzalo@example.com"
                 }
             );
-
 
             modelBuilder.Entity<Incident>().HasData(
                 new Incident
@@ -287,7 +300,7 @@ namespace SportsPro.Models
                     CustomerID = 1015,
                     ProductID = 6,
                     TechnicianID = 15,
-                    Title = "Could not install",                    
+                    Title = "Could not install",
                     Description = "Setup failed with code 104.",
                     DateOpened = DateTime.Parse("2020-01-08"),
                     DateClosed = DateTime.Parse("2020-01-10")
@@ -298,11 +311,16 @@ namespace SportsPro.Models
                     CustomerID = 1010,
                     ProductID = 3,
                     TechnicianID = -1,
-                    Title = "Error launching program",                    
+                    Title = "Error launching program",
                     Description = "Program fails with error code 510, unable to open database.",
                     DateOpened = DateTime.Parse("2020-01-10"),
                     DateClosed = null
                 }
+            );
+
+            modelBuilder.Entity<Registration>().HasData(
+                new Registration { CustomerID = 1002, ProductID = 1 },
+                new Registration { CustomerID = 1002, ProductID = 3 }
             );
         }
     }

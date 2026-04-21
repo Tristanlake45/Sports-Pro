@@ -21,6 +21,7 @@ namespace SportsPro.Models
         [Required(ErrorMessage = "Release date is required.")]
         [DataType(DataType.Date)]
         public DateTime ReleaseDate { get; set; } = DateTime.Today;
+
+        public ICollection<Registration>? Registrations { get; set; }
     }
 }
-

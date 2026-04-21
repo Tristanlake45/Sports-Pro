@@ -40,10 +40,15 @@ namespace SportsPro.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Add(Customer customer)
         {
-            // IMPORTANT: reload dropdowns when invalid
+            if (!string.IsNullOrWhiteSpace(customer.Email) &&
+                _context.Customers.Any(c => c.Email.ToLower() == customer.Email.ToLower()))
+            {
+                ModelState.AddModelError(nameof(customer.Email), "Email address already in use.");
+            }
+
             if (!ModelState.IsValid)
             {
-                LoadCountries();
+                LoadCountries(customer.CountryID);
                 return View("AddEdit", customer);
             }
 
@@ -58,7 +63,10 @@ namespace SportsPro.Controllers
         public IActionResult Edit(int id)
         {
             var customer = _context.Customers.Find(id);
-            if (customer == null) return NotFound();
+            if (customer == null)
+            {
+                return NotFound();
+            }
 
             LoadCountries(customer.CountryID);
             return View("AddEdit", customer);
@@ -69,7 +77,18 @@ namespace SportsPro.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Customer customer)
         {
-            if (id != customer.CustomerID) return BadRequest();
+            if (id != customer.CustomerID)
+            {
+                return BadRequest();
+            }
+
+            if (!string.IsNullOrWhiteSpace(customer.Email) &&
+                _context.Customers.Any(c =>
+                    c.Email.ToLower() == customer.Email.ToLower() &&
+                    c.CustomerID != customer.CustomerID))
+            {
+                ModelState.AddModelError(nameof(customer.Email), "Email address already in use.");
+            }
 
             if (!ModelState.IsValid)
             {
@@ -77,7 +96,6 @@ namespace SportsPro.Controllers
                 return View("AddEdit", customer);
             }
 
-            Console.WriteLine($"CountryID posted: '{customer.CountryID}'");
             _context.Customers.Update(customer);
             _context.SaveChanges();
 
@@ -89,7 +107,10 @@ namespace SportsPro.Controllers
         public IActionResult Delete(int id)
         {
             var customer = _context.Customers.Find(id);
-            if (customer == null) return NotFound();
+            if (customer == null)
+            {
+                return NotFound();
+            }
 
             return View(customer);
         }
@@ -100,9 +121,11 @@ namespace SportsPro.Controllers
         public IActionResult DeleteConfirmed(int id)
         {
             var customer = _context.Customers.Find(id);
-            if (customer == null) return RedirectToAction(nameof(List));
+            if (customer == null)
+            {
+                return RedirectToAction(nameof(List));
+            }
 
-            Console.WriteLine($"CountryID posted: '{customer.CountryID}'");
             _context.Customers.Remove(customer);
             _context.SaveChanges();
 
